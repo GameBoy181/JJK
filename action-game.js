@@ -31,7 +31,9 @@ const player = {
     attackCooldown: 0,
     dodgeRolling: false,
     dodgeCooldown: 0,
-    invulnerable: 0
+    invulnerable: 0,
+    lastDirX: 1,  // Track last direction
+    lastDirY: 0
 };
 
 // Enemies array
@@ -69,6 +71,12 @@ function updatePlayer() {
     if (keys['arrowleft'] || keys['a']) player.vx = -player.speed;
     if (keys['arrowright'] || keys['d']) player.vx = player.speed;
     
+    // Update last direction based on movement
+    if (player.vx !== 0 || player.vy !== 0) {
+        player.lastDirX = player.vx;
+        player.lastDirY = player.vy;
+    }
+    
     player.x += player.vx;
     player.y += player.vy;
     
@@ -87,16 +95,28 @@ function updatePlayer() {
 // Player attack
 function playerAttack() {
     if (player.attackCooldown <= 0) {
-        // Create blood spike projectile
+        // Normalize direction
+        let dirX = player.lastDirX;
+        let dirY = player.lastDirY;
+        const dist = Math.sqrt(dirX * dirX + dirY * dirY);
+        
+        if (dist > 0) {
+            dirX = dirX / dist;
+            dirY = dirY / dist;
+        }
+        
+        // Create blood spike projectile in the direction of movement
         bloodProjectiles.push({
             x: player.x + player.width / 2,
             y: player.y + player.height / 2,
-            vx: 8,
-            vy: 0,
+            vx: dirX * 8,
+            vy: dirY * 8,
             width: 10,
             height: 5,
             damage: 20,
-            life: 100
+            life: 100,
+            dirX: dirX,
+            dirY: dirY
         });
         
         player.attackCooldown = 15;
@@ -113,8 +133,8 @@ function playerDodge() {
         player.dodgeCooldown = 60;
         
         // Quick dash forward
-        player.x += player.vx * 15;
-        player.y += player.vy * 15;
+        player.x += player.lastDirX * 15;
+        player.y += player.lastDirY * 15;
         
         setTimeout(() => { player.dodgeRolling = false; }, 300);
     }
@@ -313,13 +333,25 @@ function drawEnemySpirit(x, y) {
     ctx.restore();
 }
 
-// Draw blood projectiles
+// Draw blood projectiles with rotation based on direction
 function drawProjectiles() {
     bloodProjectiles.forEach(proj => {
+        ctx.save();
+        
+        // Translate to projectile center
+        ctx.translate(proj.x, proj.y);
+        
+        // Rotate based on direction
+        const angle = Math.atan2(proj.dirY, proj.dirX);
+        ctx.rotate(angle);
+        
+        // Draw rotated blood spike
         ctx.fillStyle = '#FF3333';
-        ctx.fillRect(proj.x, proj.y, 4, 2);
-        ctx.fillRect(proj.x + 1, proj.y - 1, 2, 4);
-        ctx.fillRect(proj.x - 1, proj.y + 1, 6, 1);
+        ctx.fillRect(-2, -1, 4, 2);
+        ctx.fillRect(-1, -3, 2, 4);
+        ctx.fillRect(-3, 0, 6, 1);
+        
+        ctx.restore();
     });
 }
 
