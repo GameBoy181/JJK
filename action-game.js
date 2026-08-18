@@ -20,8 +20,8 @@ let combo = 0;
 const player = {
     x: gameWidth / 2,
     y: gameHeight / 2,
-    width: 32,
-    height: 48,
+    width: 16,
+    height: 20,
     speed: 5,
     health: 100,
     maxHealth: 100,
@@ -93,8 +93,8 @@ function playerAttack() {
             y: player.y + player.height / 2,
             vx: 8,
             vy: 0,
-            width: 15,
-            height: 8,
+            width: 10,
+            height: 5,
             damage: 20,
             life: 100
         });
@@ -135,8 +135,8 @@ function spawnEnemies() {
         enemies.push({
             x: x,
             y: y,
-            width: 28,
-            height: 32,
+            width: 14,
+            height: 16,
             speed: 2 + wave * 0.5,
             health: 30 + wave * 10,
             maxHealth: 30 + wave * 10,
@@ -218,135 +218,113 @@ function isColliding(rect1, rect2) {
            rect1.y + rect1.height > rect2.y;
 }
 
-// Draw pixel at specific position
-function drawPixel(x, y, color) {
-    ctx.fillStyle = color;
-    ctx.fillRect(x, y, 4, 4);
+// Draw pixel at scale
+function px(x) {
+    return x * 2;
 }
 
-// Draw Choso - based on reference image
-function drawChosoPixelArt(x, y, size, isInvulnerable) {
+// Draw Choso - TINY pixel art (16x20 max)
+function drawChosoPixelArt(x, y, isInvulnerable) {
     ctx.save();
     
     if (isInvulnerable && Math.floor(isInvulnerable / 5) % 2) {
         ctx.globalAlpha = 0.5;
     }
     
-    const scale = 1.5;
-    const px = x + 8;
-    const py = y + 6;
+    const scale = 2;
+    const sx = x;
+    const sy = y;
     
-    // Black hair (top)
+    // Black hair
     ctx.fillStyle = '#1a1a1a';
-    ctx.fillRect(px - 8, py - 6, 16, 6);
-    ctx.fillRect(px - 4, py - 8, 8, 2);
+    ctx.fillRect(sx + 3, sy, 10, 3);
+    ctx.fillRect(sx + 5, sy - 1, 6, 1);
     
-    // White eyes (large and prominent)
+    // White eyes
     ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(px - 6, py - 2, 4, 4);
-    ctx.fillRect(px + 2, py - 2, 4, 4);
+    ctx.fillRect(sx + 4, sy + 2, 2, 2);
+    ctx.fillRect(sx + 10, sy + 2, 2, 2);
     
-    // Eye pupils (black)
+    // Eye pupils
     ctx.fillStyle = '#000000';
-    ctx.fillRect(px - 5, py - 1, 2, 2);
-    ctx.fillRect(px + 3, py - 1, 2, 2);
+    ctx.fillRect(sx + 4, sy + 2, 1, 1);
+    ctx.fillRect(sx + 10, sy + 2, 1, 1);
     
-    // Face (light skin)
+    // Face (skin)
     ctx.fillStyle = '#E8D4C8';
-    ctx.fillRect(px - 6, py, 12, 4);
+    ctx.fillRect(sx + 3, sy + 4, 10, 2);
     
-    // Mouth (line)
-    ctx.fillStyle = '#000000';
-    ctx.fillRect(px - 3, py + 2, 6, 1);
-    
-    // White jacket/shirt
+    // White jacket
     ctx.fillStyle = '#F5F5F5';
-    ctx.fillRect(px - 8, py + 4, 16, 8);
+    ctx.fillRect(sx + 2, sy + 6, 12, 4);
     
-    // Jacket sleeves (white)
+    // Sleeves
     ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(px - 10, py + 4, 3, 6);
-    ctx.fillRect(px + 7, py + 4, 3, 6);
+    ctx.fillRect(sx + 1, sy + 6, 1, 3);
+    ctx.fillRect(sx + 13, sy + 6, 1, 3);
     
-    // Dark vest/inner layer (navy)
+    // Dark vest
     ctx.fillStyle = '#1a1a3a';
-    ctx.fillRect(px - 4, py + 4, 8, 6);
+    ctx.fillRect(sx + 5, sy + 6, 6, 3);
     
-    // Dark pants (navy)
+    // Dark pants
     ctx.fillStyle = '#1a1a3a';
-    ctx.fillRect(px - 6, py + 12, 12, 10);
+    ctx.fillRect(sx + 3, sy + 10, 10, 7);
     
-    // White socks/lower legs
+    // White socks
     ctx.fillStyle = '#F0F0F0';
-    ctx.fillRect(px - 6, py + 18, 3, 4);
-    ctx.fillRect(px + 3, py + 18, 3, 4);
+    ctx.fillRect(sx + 4, sy + 16, 2, 2);
+    ctx.fillRect(sx + 10, sy + 16, 2, 2);
     
-    // Dark shoes/boots
+    // Dark shoes
     ctx.fillStyle = '#3d2817';
-    ctx.fillRect(px - 6, py + 22, 3, 2);
-    ctx.fillRect(px + 3, py + 22, 3, 2);
+    ctx.fillRect(sx + 4, sy + 18, 2, 2);
+    ctx.fillRect(sx + 10, sy + 18, 2, 2);
     
-    // Attack aura effect
+    // Attack effect
     if (player.attacking) {
         ctx.strokeStyle = '#FF3333';
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 1;
         ctx.globalAlpha = 0.6;
-        ctx.strokeRect(px - 10, py - 8, 20, 32);
+        ctx.strokeRect(sx, sy - 2, 16, 22);
     }
     
     ctx.restore();
 }
 
-// Draw pixel art enemy (cursed spirit)
+// Draw enemy spirit - TINY
 function drawEnemySpirit(x, y) {
     ctx.save();
     
-    const px = x + 8;
-    const py = y + 6;
+    const sx = x;
+    const sy = y;
     
-    // Enemy body (purple cursed spirit)
+    // Enemy body
     ctx.fillStyle = '#6B4C9A';
-    ctx.fillRect(px - 8, py, 16, 12);
+    ctx.fillRect(sx + 1, sy, 12, 8);
     
-    // Darker shadow/details
+    // Darker center
     ctx.fillStyle = '#4B2C7A';
-    ctx.fillRect(px - 4, py + 2, 8, 4);
+    ctx.fillRect(sx + 3, sy + 1, 8, 3);
     
-    // Eyes (glowing red)
+    // Eyes
     ctx.fillStyle = '#FF3333';
-    ctx.fillRect(px - 4, py + 2, 2, 3);
-    ctx.fillRect(px + 2, py + 2, 2, 3);
+    ctx.fillRect(sx + 3, sy + 2, 1, 1);
+    ctx.fillRect(sx + 10, sy + 2, 1, 1);
     
-    // Mouth (angry expression)
+    // Mouth
     ctx.fillStyle = '#FF3333';
-    ctx.fillRect(px - 3, py + 7, 6, 1);
-    
-    // Spiky aura
-    ctx.strokeStyle = '#6B4C9A';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(px - 9, py);
-    ctx.lineTo(px - 11, py - 2);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(px + 9, py);
-    ctx.lineTo(px + 11, py - 2);
-    ctx.stroke();
+    ctx.fillRect(sx + 4, sy + 5, 6, 1);
     
     ctx.restore();
 }
 
-// Draw blood projectiles (pixel style spike)
+// Draw blood projectiles
 function drawProjectiles() {
     bloodProjectiles.forEach(proj => {
         ctx.fillStyle = '#FF3333';
-        // Pixel art blood spike
-        ctx.fillRect(proj.x, proj.y, 4, 2);
-        ctx.fillRect(proj.x + 1, proj.y - 2, 2, 4);
-        ctx.fillRect(proj.x - 1, proj.y + 1, 6, 1);
-        
-        ctx.fillStyle = '#FF5555';
-        ctx.fillRect(proj.x + 2, proj.y - 1, 2, 3);
+        ctx.fillRect(proj.x, proj.y, 3, 2);
+        ctx.fillRect(proj.x + 1, proj.y - 1, 1, 3);
     });
 }
 
@@ -356,7 +334,7 @@ function draw() {
     ctx.fillStyle = 'rgba(26, 0, 51, 0.2)';
     ctx.fillRect(0, 0, gameWidth, gameHeight);
     
-    // Draw grid background (retro feel)
+    // Draw grid background
     ctx.strokeStyle = 'rgba(255, 68, 68, 0.05)';
     ctx.lineWidth = 1;
     for (let i = 0; i < gameWidth; i += 32) {
@@ -373,7 +351,7 @@ function draw() {
     }
     
     // Draw player (Choso)
-    drawChosoPixelArt(player.x, player.y, player.width, player.invulnerable);
+    drawChosoPixelArt(player.x, player.y, player.invulnerable);
     
     // Draw enemies
     enemies.forEach(enemy => {
@@ -381,9 +359,9 @@ function draw() {
         
         // Health bar
         ctx.fillStyle = '#ff4444';
-        ctx.fillRect(enemy.x, enemy.y - 8, (enemy.health / enemy.maxHealth) * enemy.width, 4);
+        ctx.fillRect(enemy.x, enemy.y - 4, (enemy.health / enemy.maxHealth) * enemy.width, 2);
         ctx.strokeStyle = '#ff8888';
-        ctx.strokeRect(enemy.x, enemy.y - 8, enemy.width, 4);
+        ctx.strokeRect(enemy.x, enemy.y - 4, enemy.width, 2);
     });
     
     // Draw projectiles
