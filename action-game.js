@@ -20,8 +20,8 @@ let combo = 0;
 const player = {
     x: gameWidth / 2,
     y: gameHeight / 2,
-    width: 30,
-    height: 40,
+    width: 32,
+    height: 32,
     speed: 5,
     health: 100,
     maxHealth: 100,
@@ -135,8 +135,8 @@ function spawnEnemies() {
         enemies.push({
             x: x,
             y: y,
-            width: 25,
-            height: 35,
+            width: 24,
+            height: 24,
             speed: 2 + wave * 0.5,
             health: 30 + wave * 10,
             maxHealth: 30 + wave * 10,
@@ -218,41 +218,145 @@ function isColliding(rect1, rect2) {
            rect1.y + rect1.height > rect2.y;
 }
 
-// Draw player
-function drawPlayer() {
+// Draw Choso (64-bit style pixel art)
+function drawChoso(x, y, size, isInvulnerable) {
     ctx.save();
     
-    if (player.invulnerable > 0 && Math.floor(player.invulnerable / 5) % 2) {
+    if (isInvulnerable && Math.floor(isInvulnerable / 5) % 2) {
         ctx.globalAlpha = 0.5;
     }
     
-    // Draw Choso (blood red)
-    ctx.fillStyle = '#ff4444';
-    ctx.fillRect(player.x, player.y, player.width, player.height);
+    const scale = size / 16;
+    ctx.scale(scale, scale);
+    x = x / scale;
+    y = y / scale;
     
-    // Eyes
-    ctx.fillStyle = '#000';
-    ctx.fillRect(player.x + 8, player.y + 10, 5, 5);
-    ctx.fillRect(player.x + 17, player.y + 10, 5, 5);
+    // Draw Choso's body with more detail
+    // Main body (dark red/maroon)
+    ctx.fillStyle = '#8B0000';
+    ctx.fillRect(x + 2, y + 1, 12, 14);
     
-    // Attack effect
+    // Chest area (darker)
+    ctx.fillStyle = '#660000';
+    ctx.fillRect(x + 3, y + 2, 10, 7);
+    
+    // Head/Face area (blood red)
+    ctx.fillStyle = '#DC143C';
+    ctx.fillRect(x + 3, y + 0, 10, 4);
+    
+    // Eye sockets (black)
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(x + 4, y + 1, 2, 2);
+    ctx.fillRect(x + 10, y + 1, 2, 2);
+    
+    // Eyes (white with dark pupils - Choso's eyes)
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(x + 4, y + 1, 2, 2);
+    ctx.fillRect(x + 10, y + 1, 2, 2);
+    
+    // Pupils (dark)
+    ctx.fillStyle = '#1a1a1a';
+    ctx.fillRect(x + 4, y + 1, 1, 1);
+    ctx.fillRect(x + 10, y + 1, 1, 1);
+    
+    // Mouth line (dark)
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(x + 5, y + 4, 6, 1);
+    
+    // Arms (maroon)
+    ctx.fillStyle = '#8B0000';
+    ctx.fillRect(x + 0, y + 3, 2, 6);
+    ctx.fillRect(x + 14, y + 3, 2, 6);
+    
+    // Legs (dark red)
+    ctx.fillStyle = '#660000';
+    ctx.fillRect(x + 4, y + 12, 2, 4);
+    ctx.fillRect(x + 10, y + 12, 2, 4);
+    
+    // Blood marks on chest
+    ctx.fillStyle = '#FF0000';
+    ctx.fillRect(x + 6, y + 4, 1, 1);
+    ctx.fillRect(x + 9, y + 5, 1, 1);
+    ctx.fillRect(x + 7, y + 6, 1, 1);
+    
+    // Attack effect - blood aura
     if (player.attacking) {
-        ctx.strokeStyle = '#ff8888';
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.arc(player.x + player.width / 2, player.y + player.height / 2, 25, 0, Math.PI * 2);
-        ctx.stroke();
+        ctx.strokeStyle = '#FF4444';
+        ctx.lineWidth = 2;
+        ctx.globalAlpha = 0.6;
+        ctx.strokeRect(x - 1, y - 1, 18, 18);
     }
     
     ctx.restore();
 }
 
-// Draw enemies
-function drawEnemies() {
+// Draw pixel art enemy (cursed spirit)
+function drawEnemy(x, y, size) {
+    const scale = size / 16;
+    ctx.save();
+    ctx.scale(scale, scale);
+    x = x / scale;
+    y = y / scale;
+    
+    // Enemy body (purple cursed spirit)
+    ctx.fillStyle = '#6B4C9A';
+    ctx.fillRect(x + 2, y + 2, 12, 12);
+    
+    // Darker shadow
+    ctx.fillStyle = '#4B2C7A';
+    ctx.fillRect(x + 3, y + 3, 10, 5);
+    
+    // Eyes (glowing red)
+    ctx.fillStyle = '#FF3333';
+    ctx.fillRect(x + 4, y + 5, 2, 2);
+    ctx.fillRect(x + 10, y + 5, 2, 2);
+    
+    // Mouth (angry)
+    ctx.fillStyle = '#FF3333';
+    ctx.fillRect(x + 5, y + 9, 6, 1);
+    
+    ctx.restore();
+}
+
+// Draw blood projectiles (pixel style)
+function drawProjectiles() {
+    bloodProjectiles.forEach(proj => {
+        ctx.fillStyle = '#FF3333';
+        // Pixel art blood spike
+        ctx.fillRect(proj.x, proj.y, 4, 2);
+        ctx.fillRect(proj.x + 1, proj.y - 2, 2, 4);
+        ctx.fillRect(proj.x - 1, proj.y + 1, 6, 1);
+    });
+}
+
+// Draw game
+function draw() {
+    // Clear canvas
+    ctx.fillStyle = 'rgba(26, 0, 51, 0.2)';
+    ctx.fillRect(0, 0, gameWidth, gameHeight);
+    
+    // Draw grid background (retro feel)
+    ctx.strokeStyle = 'rgba(255, 68, 68, 0.05)';
+    ctx.lineWidth = 1;
+    for (let i = 0; i < gameWidth; i += 32) {
+        ctx.beginPath();
+        ctx.moveTo(i, 0);
+        ctx.lineTo(i, gameHeight);
+        ctx.stroke();
+    }
+    for (let i = 0; i < gameHeight; i += 32) {
+        ctx.beginPath();
+        ctx.moveTo(0, i);
+        ctx.lineTo(gameWidth, i);
+        ctx.stroke();
+    }
+    
+    // Draw player
+    drawChoso(player.x, player.y, player.width, player.invulnerable);
+    
+    // Draw enemies
     enemies.forEach(enemy => {
-        // Enemy body
-        ctx.fillStyle = '#8844ff';
-        ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
+        drawEnemy(enemy.x, enemy.y, enemy.width);
         
         // Health bar
         ctx.fillStyle = '#ff4444';
@@ -260,37 +364,15 @@ function drawEnemies() {
         ctx.strokeStyle = '#ff8888';
         ctx.strokeRect(enemy.x, enemy.y - 8, enemy.width, 4);
     });
-}
-
-// Draw projectiles
-function drawProjectiles() {
-    bloodProjectiles.forEach(proj => {
-        ctx.fillStyle = '#ff6666';
-        ctx.beginPath();
-        ctx.moveTo(proj.x + proj.width / 2, proj.y);
-        ctx.lineTo(proj.x + proj.width, proj.y + proj.height / 2);
-        ctx.lineTo(proj.x + proj.width / 2, proj.y + proj.height);
-        ctx.lineTo(proj.x, proj.y + proj.height / 2);
-        ctx.closePath();
-        ctx.fill();
-    });
-}
-
-// Draw game
-function draw() {
-    // Clear canvas
-    ctx.fillStyle = 'rgba(26, 0, 51, 0.3)';
-    ctx.fillRect(0, 0, gameWidth, gameHeight);
     
-    drawPlayer();
-    drawEnemies();
+    // Draw projectiles
     drawProjectiles();
     
-    // Draw wave text
-    ctx.fillStyle = '#ff6666';
-    ctx.font = 'bold 20px Arial';
-    ctx.fillText(`Wave: ${wave}`, 20, 30);
-    ctx.fillText(`Combo: ${combo}`, 20, 60);
+    // Draw wave and combo text
+    ctx.fillStyle = '#FF3333';
+    ctx.font = 'bold 24px Arial';
+    ctx.fillText(`Wave: ${wave}`, 20, 40);
+    ctx.fillText(`Combo: ${combo}`, 20, 70);
     
     // Update HUD
     updateHUD();
