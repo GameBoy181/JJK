@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choso Action Game - JJK</title>
+    <link rel="stylesheet" href="action-style.css">
+</head>
+<body>
+    <div class="game-container">
+        <header>
+            <h1>⚔️ CHOSO ACTION GAME ⚔️</h1>
+            <p>Control Choso with Arrow Keys or WASD | SPACE to Attack</p>
+        </header>
+
+        <div class="game-wrapper">
+            <canvas id="gameCanvas" width="1000" height="600"></canvas>
+            
+            <div class="hud">
+                <div class="health-bar">
+                    <label>Choso Health:</label>
+                    <div class="bar-bg">
+                        <div class="bar-fill" id="playerHealth"></div>
+                    </div>
+                    <span id="healthText">100/100</span>
+                </div>
+
+                <div class="enemy-health-bar">
+                    <label>Enemy Health:</label>
+                    <div class="bar-bg">
+                        <div class="bar-fill enemy" id="enemyHealth"></div>
+                    </div>
+                    <span id="enemyHealthText">100/100</span>
+                </div>
+
+                <div class="stats">
+                    <p>Score: <span id="score">0</span></p>
+                    <p>Wave: <span id="wave">1</span></p>
+                    <p>Combo: <span id="combo">0</span></p>
+                </div>
+            </div>
+
+            <div class="controls-info">
+                <h3>Controls:</h3>
+                <p>↑ ↓ ← → or WASD - Move</p>
+                <p>SPACE - Attack with Blood</p>
+                <p>Q - Dodge Roll</p>
+            </div>
+
+            <div id="gameOverScreen" class="game-over hidden">
+                <div class="game-over-content">
+                    <h2>GAME OVER</h2>
+                    <p id="finalScore"></p>
+                    <button onclick="location.reload()">Play Again</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="action-game.js"></script>
+</body>
+</html>
