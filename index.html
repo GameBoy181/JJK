@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choso Blood Manipulation Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚔️ Choso's Blood Power</h1>
+            <p class="subtitle">Master the art of blood manipulation</p>
+        </header>
+
+        <div class="game-board">
+            <div class="stats-panel">
+                <div class="stat-box">
+                    <h3>Blood Energy</h3>
+                    <p id="bloodEnergy" class="big-number">0</p>
+                </div>
+                <div class="stat-box">
+                    <h3>Cursed Power</h3>
+                    <p id="cursedPower" class="big-number">0</p>
+                </div>
+                <div class="stat-box">
+                    <h3>Level</h3>
+                    <p id="level" class="big-number">1</p>
+                </div>
+            </div>
+
+            <div class="main-game">
+                <div class="choso-container">
+                    <div class="choso-sprite">🩸</div>
+                    <p class="choso-text">Click to generate blood energy!</p>
+                </div>
+                <button id="clickBtn" class="click-button">Generate Blood</button>
+                <p id="floatingText" class="floating-text"></p>
+            </div>
+
+            <div class="upgrades-panel">
+                <h2>Abilities</h2>
+                <div class="upgrades-grid">
+                    <div class="upgrade-card">
+                        <h4>Blood Spike</h4>
+                        <p>+1 Energy per click</p>
+                        <p class="cost">Cost: 10 BP</p>
+                        <button class="upgrade-btn" data-upgrade="bloodSpike">Upgrade</button>
+                        <p class="level-text">Level: <span id="bloodSpike-level">0</span></p>
+                    </div>
+
+                    <div class="upgrade-card">
+                        <h4>Cursed Energy Flow</h4>
+                        <p>+1 Power per second</p>
+                        <p class="cost">Cost: 50 BP</p>
+                        <button class="upgrade-btn" data-upgrade="energyFlow">Upgrade</button>
+                        <p class="level-text">Level: <span id="energyFlow-level">0</span></p>
+                    </div>
+
+                    <div class="upgrade-card">
+                        <h4>Blood Clone</h4>
+                        <p>+5 Energy per click</p>
+                        <p class="cost">Cost: 200 BP</p>
+                        <button class="upgrade-btn" data-upgrade="bloodClone">Upgrade</button>
+                        <p class="level-text">Level: <span id="bloodClone-level">0</span></p>
+                    </div>
+
+                    <div class="upgrade-card">
+                        <h4>Convergence</h4>
+                        <p>2x Cursed Power gain</p>
+                        <p class="cost">Cost: 500 BP</p>
+                        <button class="upgrade-btn" data-upgrade="convergence">Upgrade</button>
+                        <p class="level-text">Level: <span id="convergence-level">0</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-panel">
+                <h3>Current Stats</h3>
+                <p>Energy Per Click: <span id="clickPower">1</span></p>
+                <p>Power Per Second: <span id="powerPerSecond">0</span></p>
+                <p>Total Cursed Power: <span id="totalPower">0</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
